@@ -1,0 +1,7 @@
+<h1>Bookmark Details</h1>
+
+<p><strong>Movie:</strong> <%= @bookmark.movie.title %></p>
+<p><strong>Comment:</strong> <%= @bookmark.comment %></p>
+
+<%= link_to 'Edit', edit_list_bookmark_path(@list, @bookmark) %> |
+<%= link_to 'Back', list_path(@list) %>

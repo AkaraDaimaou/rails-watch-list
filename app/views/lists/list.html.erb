@@ -1,0 +1,16 @@
+<h1>List Details</h1>
+
+<p><strong>Name:</strong> <%= @list.name %></p>
+<p><strong>Description:</strong> <%= @list.description %></p>
+
+<% if action_name == 'show' %>
+  <!-- Additional content specific to the 'show' action -->
+  <%= render 'bookmarks/bookmark_list' %>
+<% elsif action_name == 'edit' %>
+  <!-- Form for editing the list -->
+  <%= render 'form', list: @list %>
+<% else %>
+  <!-- Default content for other actions -->
+  <%= link_to 'Edit', edit_list_path(@list) %>
+  <%= link_to 'Back', lists_path %>
+<% end %>
