@@ -1,12 +1,14 @@
 class BookmarksController < ApplicationController
-  before_action :find_movie_and_list, only: [:create]
+  before_action :set_list, only: [:create]
+  before_action :set_bookmark, only: [:destroy]
 
   def create
-    @bookmark = Bookmark.new(bookmark_params)
+    @bookmark = @list.bookmarks.new(bookmark_params)
+
     if @bookmark.save
-      redirect_to @movie, notice: 'Bookmark was successfully created.'
+      redirect_to @list, notice: 'Bookmark was successfully created.'
     else
-      render 'movies/show'
+      render :new
     end
   end
 
@@ -20,28 +22,23 @@ class BookmarksController < ApplicationController
   end
 
   def destroy
-    @list = List.find(params[:list_id])
-    @bookmark = @list.bookmarks.find(params[:id])
-
-    if @bookmark.destroy
-      redirect_to list_path(@list), notice: 'Bookmark was successfully deleted.'
-    else
-      redirect_to list_path(@list), alert: 'Failed to delete bookmark.'
-    end
+    @list = @bookmark.list
+    @bookmark.destroy
+    redirect_to list_path(@list), notice: 'Bookmark was successfully destroyed.'
   end
 
   private
 
   def bookmark_params
-    params.require(:bookmark).permit(:comment, :movie_id, :list_id)
+    params.require(:bookmark).permit(:comment, :movie_id)
   end
 
-  def find_movie_and_list
-    @movie = Movie.find(params[:bookmark][:movie_id])
-    @list = List.find(params[:bookmark][:list_id])
-  rescue ActiveRecord::RecordNotFound
-    flash[:alert] = "Movie or List not found."
-    redirect_to root_path
+  def set_list
+    @list = List.find(params[:list_id])
+  end
+
+  def set_bookmark
+    @bookmark = Bookmark.find(params[:id])
   end
 
 end
